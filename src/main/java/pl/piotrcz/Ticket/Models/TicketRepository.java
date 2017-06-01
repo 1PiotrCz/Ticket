@@ -13,4 +13,6 @@ import java.util.Optional;
 public interface TicketRepository extends CrudRepository<Ticket, Integer> {
     Optional<Ticket> findOne (int id);
     List<Ticket> findByAuthor(String author);
+    List<Ticket> findByMessage(String preffix);
+
 }

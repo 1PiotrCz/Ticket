@@ -54,22 +54,33 @@ public class MainController {
 ////        return ticket.map(s-> "Dana z bazy " + s.getMessage()).orElse("Brak danych");
 //    }
 
+//    @RequestMapping(value = "/{ticketId}", method = RequestMethod.GET)
+//    @ResponseBody
+//    public String home(@PathVariable("ticketId") int id) {
+//        List<Ticket> tickets = ticketRepository.findByAuthor("Piotr Czubkowski");
+//
+//        String messages = "Tickety Piotra Czubkowskiego";
+//        for (Ticket ticket : tickets) {
+//            messages += ticket.getMessage() + " , ";
+//        }
+//        return messages;
+////        return tickets
+////                .stream()
+////                .map(s->s.getMessage())
+////                .collect(Collectors.joining(" , ", " Tickety: ", " , "));
+//    }
+
+
     @RequestMapping(value = "/{ticketId}", method = RequestMethod.GET)
     @ResponseBody
     public String home(@PathVariable("ticketId") int id) {
-        List<Ticket> tickets = ticketRepository.findByAuthor("Piotr Czubkowski");
+        List<Ticket> tickets = ticketRepository.findByMessage("Wiadomość%");
 
-        String messages = "Tickety Piotra Czubkowskiego";
+        String messages = "Tickety rozpoczynające się od 'wiaodmość:'";
         for (Ticket ticket : tickets) {
             messages += ticket.getMessage() + " , ";
         }
-
         return messages;
-//        return tickets
-//                .stream()
-//                .map(s->s.getMessage())
-//                .collect(Collectors.joining(" , ", " Tickety: ", " , "));
+
     }
-
-
 }
