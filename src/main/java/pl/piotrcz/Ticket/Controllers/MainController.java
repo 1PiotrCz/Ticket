@@ -1,16 +1,21 @@
 package pl.piotrcz.Ticket.Controllers;
 
+import javafx.scene.input.DataFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import pl.piotrcz.Ticket.Models.Ticket;
-import pl.piotrcz.Ticket.Models.TicketRepository;
+import pl.piotrcz.Ticket.Models.*;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -21,6 +26,9 @@ public class MainController {
 
     @Autowired
     TicketRepository ticketRepository;
+
+//    @Autowired
+//    User2Repository user2Repository;
 
 //    @RequestMapping(value = "/", method = RequestMethod.GET)
 //    @ResponseBody
@@ -71,16 +79,112 @@ public class MainController {
 //    }
 
 
-    @RequestMapping(value = "/{ticketId}", method = RequestMethod.GET)
-    @ResponseBody
-    public String home(@PathVariable("ticketId") int id) {
-        List<Ticket> tickets = ticketRepository.findByMessage("Wiadomość%");
+//    @RequestMapping(value = "/{ticketId}", method = RequestMethod.GET)
+//    @ResponseBody
+//    public String home(@PathVariable("ticketId") int id) {
+//        List<Ticket> tickets = ticketRepository.findByMessage("Wiadomość%");
+//
+//        String messages = "Tickety rozpoczynające się od 'wiaodmość:'";
+//        for (Ticket ticket : tickets) {
+//            messages += ticket.getMessage() + " , ";
+//        }
+//        return messages;
+//
+//    }
 
-        String messages = "Tickety rozpoczynające się od 'wiaodmość:'";
-        for (Ticket ticket : tickets) {
-            messages += ticket.getMessage() + " , ";
+//    @RequestMapping(value = "/user", method = RequestMethod.GET)
+//    @ResponseBody
+//    public String user(){
+//        User2 user = userRepository.findOne( 180);
+//        return "Czas: " + user.getDatetime().toString();
+//    }
+
+//    @RequestMapping(value = "/user", method = RequestMethod.GET)
+//    @ResponseBody
+//    public String user2() {
+
+//        List<User2> user2s = user2Repository.findByRole("Adnim");
+//        return user2s.stream().map(s -> s.getUsername()).collect(Collectors.joining(" , ", "", ""));
+
+//
+//        DateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        Date date1 = null;
+//        Date date2 = null;
+//
+//        try {
+//            date1 =  formater.parse("2017-04-12 16:32:06");
+//            date2 = formater.parse("2017-06-13 00:00:00");
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//
+//        List<User2> user2s = user2Repository.findByDatetimeBetween(date1, date2);
+//        return user2s.stream().map(s -> s.getUsername()).collect(
+//                Collectors.joining(" , ", "Role: ", ""));
+
+
+//        List<User2> users = user2Repository.findByUsernameContainingAndIdGreaterThan("os", 3);
+//        return users.stream().map(s->s.getUsername()).collect(Collectors.joining(" , ", "Role:", ""));
+
+//        Page<User2> currentPage = user2Repository.findAll(new PageRequest(0,4));
+//        StringBuilder builder = new StringBuilder();
+//
+//        for (User2 user2 : currentPage.getContent()){
+//            builder.append("Username: " + user2.getUsername() + "<br>");
+//        }
+//
+//        builder.append("<br> Ilość stron: " + currentPage.getTotalPages());
+//        builder.append("<br> Czy zawiera następna stronę? " + currentPage.hasNext());
+//        builder.append("<br> Czy zawiera poprzednią stronę?" + currentPage.hasPrevious());
+//
+//        currentPage.nextPageable();
+//
+//        builder.append("<br><br><br>");
+//
+//        for (User2 user2 : currentPage.nextPageable().){
+//            builder.append("Username: " + user2.getUsername() + "<br>");
+//        }
+//
+//        return builder.toString();
+
+//    }
+
+//    -------------------------------------------------------------------------------
+
+
+    @Autowired
+    UserRepository userRepository;
+
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    @ResponseBody
+    public String user() {
+
+
+        Page<User> currentPage = userRepository.findAll(new PageRequest(0, 4));
+        StringBuilder builder = new StringBuilder();
+
+        for (User user : currentPage.getContent()) {
+            builder.append("Username: " + user.getUsername() + "<br>");
         }
-        return messages;
+
+        builder.append("<br><br><br><br>");
+
+        builder.append("<br> Ilość stron: " + currentPage.getTotalPages());
+        builder.append("<br> Czy zawiera następną stronę?: " + currentPage.hasNext());
+        builder.append("<br> Czy zawiera poprzednią stronę?: " + currentPage.hasPrevious());
+
+        currentPage.nextPageable();
+
+        builder.append("<br><br><br><br>");
+
+        for (User user : currentPage.getContent()) {
+            builder.append("Username: " + user.getUsername() + "<br>");
+        }
+
+//        currentPage.map();
+
+        return builder.toString();
 
     }
 }
+
