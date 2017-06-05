@@ -1,6 +1,5 @@
 package pl.piotrcz.Ticket.Controllers;
 
-import javafx.scene.input.DataFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,14 +8,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import pl.piotrcz.Ticket.Models.*;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+import pl.piotrcz.Ticket.MailService;
+import pl.piotrcz.Ticket.Models.TicketRepository;
+import pl.piotrcz.Ticket.Models.User;
+import pl.piotrcz.Ticket.Models.UserRepository;
 
 /**
  * Created by Piotr Czubkowski on 2017-06-01.
@@ -26,6 +23,12 @@ public class MainController {
 
     @Autowired
     TicketRepository ticketRepository;
+
+    @Autowired
+    MailService mailService;
+
+    @Autowired
+    TemplateEngine templateEngine;
 
 //    @Autowired
 //    User2Repository user2Repository;
@@ -184,7 +187,31 @@ public class MainController {
 //        currentPage.map();
 
         return builder.toString();
+    }
+//        Mail
 
+//    @RequestMapping (value = "/mail", method = RequestMethod.GET)
+//    @ResponseBody
+//    public String email(){
+//        mailService.sendEmail("piotrcz@o2.pl", "<b><h1> Jakas wiadomosc</h1></b>", "Wyslane z Javy");
+//        return "Wyslano maila";
+//    }
+
+
+    @RequestMapping(value = "/mail/{cash}", method = RequestMethod.GET)
+    @ResponseBody
+    public String email(@PathVariable("cash") int cash) {
+        Context context = new Context();
+        context.setVariable("welcome", "Witaj Piotrze");
+        context.setVariable("message", "Wiszisz mi pieniądze" + cash + " zl");
+
+        String bodyHtml = templateEngine.process("emailone", context);
+        mailService.sendEmail("piotrcz@o2.pl", bodyHtml, "Wyslane z Javy");
+        return "Wyslano maila";
     }
 }
+
+
+
+
 
